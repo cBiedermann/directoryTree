@@ -27,6 +27,8 @@ class Tree:
         self.show_hidden = show_hidden
         self.full_path = full_path
         self.print_sum = print_sum
+        self.directories = 0
+        self.files = 0
 
     def down(self, path: str, depth: int, last_elem) -> list:
         """
@@ -49,9 +51,11 @@ class Tree:
                 temp = last_elem.copy()
                 if last:
                     temp[depth] = False
+                self.files += 1
                 str_representation.append(
                     self.get_string_representation(os.path.join(path, entry), depth, last, temp))
                 if os.path.isdir(os.path.join(path, entry)):
+                    self.directories += 1
                     str_representation += self.down(f'{path}{os.path.sep}{entry}', depth=depth + 1,
                                                     last_elem=temp)
         return str_representation
@@ -97,6 +101,8 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10,
     directory_tree = Tree(max_depth, directories, files, exclude, only, show_hidden, full_path,
                           print_sum)
     tree = [path] + directory_tree.down(path, 0, [True] * max_depth)
+    if directory_tree.print_sum:
+        tree += [f'{directory_tree.directories} directories, {directory_tree.files} files']
     if print_string:
         print(*tree, sep='\n')
     else:
@@ -104,4 +110,4 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10,
 
 
 if __name__ == '__main__':
-    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', show_hidden=False, max_depth=2)
+    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', show_hidden=False, max_depth=2, directories=False)
