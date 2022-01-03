@@ -12,7 +12,7 @@ class Seperator(Enum):
 
 class Tree:
 
-    def __init__(self, max_depth: int = 10, min_depth: int = 0,
+    def __init__(self, max_depth: int = 10,
                  directories: bool = True,
                  files: bool = True,
                  exclude: list = [], only: list = [], show_hidden: bool = True, full_path: bool = False,
@@ -20,7 +20,6 @@ class Tree:
 
         # class variables
         self.max_depth = max_depth
-        self.min_depth = min_depth
         self.directories = directories
         self.files = files
         self.exclude = exclude
@@ -39,11 +38,8 @@ class Tree:
         """
         str_representation = []
         # checking if the file/folder is already too deep
-        if depth > self.max_depth:
+        if depth >= self.max_depth:
             return str_representation
-        elif depth < self.min_depth:
-            pass
-
         # just include the files/folder which are not excluded
         entries = [entry for entry in os.listdir(path) if not self.entry_matches(entry)]
         for entry in entries:
@@ -75,7 +71,7 @@ class Tree:
         return False
 
 
-def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, min_depth: int = 0,
+def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10,
                directories: bool = True,
                files: bool = True,
                exclude: list = [], only: list = [], show_hidden: bool = True, full_path: bool = False,
@@ -85,7 +81,6 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, m
     :param path: directory which should be printed -> cwd if nothing is specified
     :param print_string: default prints the string -> False return the string in the end
     :param max_depth: default 10
-    :param min_depth: default 0
     :param directories: directories are printed by default -> False if they should not be printed
     :param files: files are printed by default -> False if they should not be printed
     :param exclude: list of regexes -> files & folders which match will not be printed
@@ -99,7 +94,7 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, m
         path = os.getcwd()
     if not show_hidden:
         exclude.append(r'^\..*')
-    directory_tree = Tree(max_depth, min_depth, directories, files, exclude, only, show_hidden, full_path,
+    directory_tree = Tree(max_depth, directories, files, exclude, only, show_hidden, full_path,
                           print_sum)
     tree = [path] + directory_tree.down(path, 0, [True] * max_depth)
     if print_string:
@@ -109,4 +104,4 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, m
 
 
 if __name__ == '__main__':
-    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', show_hidden=False)
+    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', show_hidden=False, max_depth=2)
