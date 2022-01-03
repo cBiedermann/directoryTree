@@ -113,4 +113,4 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10,
 
 
 if __name__ == '__main__':
-    print_tree(show_hidden=False, max_depth=2, files=False)
+    print_tree(show_hidden=False, max_depth=3)

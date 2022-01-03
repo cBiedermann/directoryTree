@@ -14,3 +14,27 @@ The method print_tree() handles all the possible options which are explained in 
 - full_path = True means that the full path of all the files/folders is printed
 - print_sum = Trues prints the number of files and directories printed
 
+## Output
+
+The generated output can look like this:
+```
+/Users/clara/Projekte/Directory
+├──Tree.py
+├──README.md
+└──venv
+    ├──bin
+    │   ├──pip3.8
+    │   ├──wheel3
+    │   ├──activate.ps1
+    │   ├──python3
+    │   ├──wheel3.8
+    │   ├──pip
+    │   ├──activate.xsh
+    │   ├──activate
+    │   ├──pip-3.8
+    │   └──activate.csh
+    ├──pyvenv.cfg
+    └──lib
+        └──python3.8
+4 directories, 20 files
+```
