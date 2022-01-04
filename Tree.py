@@ -12,11 +12,8 @@ class Seperator(Enum):
 
 class Tree:
 
-    def __init__(self, max_depth: int = 10,
-                 directories: bool = True,
-                 files: bool = True,
-                 exclude: list = [], only: list = [], show_hidden: bool = True, full_path: bool = False,
-                 print_sum: bool = True):
+    def __init__(self, max_depth: int = 10, directories: bool = True, files: bool = True, exclude: list = [],
+                 only: list = [], show_hidden: bool = True, full_path: bool = False, print_sum: bool = True):
 
         # class variables
         self.max_depth = max_depth
@@ -53,17 +50,14 @@ class Tree:
                     temp[depth] = False
                 if os.path.isfile(os.path.join(path, entry)) and self.files:
                     self.f += 1
-                    str_representation.append(
-                        self.get_string_representation(os.path.join(path, entry), depth, last, temp))
+                    str_representation.append(self.get_string_representation(os.path.join(path, entry), depth, temp))
                 if self.directories and os.path.isdir(os.path.join(path, entry)):
-                    str_representation.append(
-                        self.get_string_representation(os.path.join(path, entry), depth, last, temp))
+                    str_representation.append(self.get_string_representation(os.path.join(path, entry), depth, temp))
                     self.dicts += 1
-                    str_representation += self.down(f'{path}{os.path.sep}{entry}', depth=depth + 1,
-                                                    last_elem=temp)
+                    str_representation += self.down(f'{path}{os.path.sep}{entry}', depth=depth + 1, last_elem=temp)
         return str_representation
 
-    def get_string_representation(self, path: str, depth: int, last: bool, last_elem) -> str:
+    def get_string_representation(self, path: str, depth: int, last_elem) -> str:
         element: str = path if self.full_path else path.split(os.path.sep)[-1]
         representation = ''
         for i in range(depth):
@@ -78,11 +72,9 @@ class Tree:
         return False
 
 
-def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10,
-               directories: bool = True,
-               files: bool = True,
-               exclude: list = [], only: list = [], show_hidden: bool = True, full_path: bool = False,
-               print_sum: bool = True):
+def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, directories: bool = True,
+               files: bool = True, exclude: list = [], only: list = [], show_hidden: bool = True,
+               full_path: bool = False, print_sum: bool = True):
     """
     this method provides the functionality to print the working directory by setting multiple options
     :param path: directory which should be printed -> cwd if nothing is specified
@@ -101,8 +93,7 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10,
         path = os.getcwd()
     if not show_hidden:
         exclude.append(r'^\..*')
-    directory_tree = Tree(max_depth, directories, files, exclude, only, show_hidden, full_path,
-                          print_sum)
+    directory_tree = Tree(max_depth, directories, files, exclude, only, show_hidden, full_path, print_sum)
     tree = [path] + directory_tree.down(path, 0, [True] * max_depth)
     if directory_tree.print_sum:
         tree += [f'{directory_tree.dicts} directories, {directory_tree.f} files']
@@ -113,4 +104,5 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10,
 
 
 if __name__ == '__main__':
-    print_tree(show_hidden=False, max_depth=3)
+    include = [r'^LSP.*']
+    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', exclude=include, max_depth=3, show_hidden=False)
