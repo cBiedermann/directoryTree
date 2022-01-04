@@ -40,21 +40,20 @@ class Tree:
         if depth >= self.max_depth:
             return str_representation
         # just include the files/folder which are not excluded
-        entries = [entry for entry in os.listdir(path) if not self.entry_matches(entry)]
+        entries = [entry for entry in os.listdir(path) if
+                   not self.entry_matches(entry) and self.entry_matches(entry, included=True)]
         for entry in entries:
-            # if file/folder should be included
-            if self.only == [] or self.entry_matches(entry, included=True):
-                last = entry == entries[-1]
-                temp = last_elem.copy()
-                if last:
-                    temp[depth] = False
-                if os.path.isfile(os.path.join(path, entry)) and self.files:
-                    self.f += 1
-                    str_representation.append(self.get_string_representation(os.path.join(path, entry), depth, temp))
-                if self.directories and os.path.isdir(os.path.join(path, entry)):
-                    str_representation.append(self.get_string_representation(os.path.join(path, entry), depth, temp))
-                    self.dicts += 1
-                    str_representation += self.down(f'{path}{os.path.sep}{entry}', depth=depth + 1, last_elem=temp)
+            last = entry == entries[-1]
+            temp = last_elem.copy()
+            if last:
+                temp[depth] = False
+            if os.path.isfile(os.path.join(path, entry)) and self.files:
+                self.f += 1
+                str_representation.append(self.get_string_representation(os.path.join(path, entry), depth, temp))
+            if self.directories and os.path.isdir(os.path.join(path, entry)):
+                str_representation.append(self.get_string_representation(os.path.join(path, entry), depth, temp))
+                self.dicts += 1
+                str_representation += self.down(f'{path}{os.path.sep}{entry}', depth=depth + 1, last_elem=temp)
         return str_representation
 
     def get_string_representation(self, path: str, depth: int, last_elem) -> str:
@@ -93,6 +92,8 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
         path = os.getcwd()
     if not show_hidden:
         exclude.append(r'^\..*')
+    if not only:
+        only = [r'.*']
     directory_tree = Tree(max_depth, directories, files, exclude, only, show_hidden, full_path, print_sum)
     tree = [path] + directory_tree.down(path, 0, [True] * max_depth)
     if directory_tree.print_sum:
@@ -104,5 +105,5 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
 
 
 if __name__ == '__main__':
-    include = [r'^LSP.*']
-    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', exclude=include, max_depth=3, show_hidden=False)
+    include = [r'^LSP.*', 'Folien']
+    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', only=include, max_depth=3, show_hidden=False)
