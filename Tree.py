@@ -12,17 +12,20 @@ class Seperator(Enum):
 
 class Tree:
 
-    def __init__(self, max_depth: int = 10, directories: bool = True, files: bool = True, exclude: list = [],
-                 include: list = [], show_hidden: bool = True, full_path: bool = False, print_sum: bool = True):
+    def __init__(self, start_path, max_depth: int = 10, directories: bool = True, files: bool = True, exclude: list = [],
+                 include: list = [], show_hidden: bool = True, absolute_path: bool = False,
+                 relative_path: bool = False, print_sum: bool = True):
 
         # class variables
+        self.start_path = start_path
         self.max_depth = max_depth
         self.directories = directories
         self.files = files
         self.exclude = exclude
         self.include = include
         self.show_hidden = show_hidden
-        self.full_path = full_path
+        self.absolute_path = absolute_path
+        self.relative_path = relative_path
         self.print_sum = print_sum
         self.dicts = 0
         self.f = 0
@@ -57,7 +60,12 @@ class Tree:
         return str_representation
 
     def get_string_representation(self, path: str, depth: int, last_elem) -> str:
-        element: str = path if self.full_path else path.split(os.path.sep)[-1]
+        if self.absolute_path:
+            element = path
+        elif self.relative_path:
+            element = path.split(self.start_path + os.path.sep)[1]
+        else:
+            element = path if self.absolute_path else path.split(os.path.sep)[-1]
         representation = ''
         for i in range(depth):
             representation += Seperator.TO_PARENT.value if last_elem[i] else Seperator.SPACE.value
@@ -73,7 +81,7 @@ class Tree:
 
 def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, directories: bool = True,
                files: bool = True, exclude: list = [], include: list = [], show_hidden: bool = True,
-               full_path: bool = False, print_sum: bool = True):
+               absolute_path: bool = False, relative_path: bool = False, print_sum: bool = True):
     """
     this method provides the functionality to print the working directory by setting multiple options
     :param path: directory which should be printed -> cwd if nothing is specified
@@ -84,7 +92,8 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
     :param exclude: list of regexes -> files & folders which match will not be printed
     :param include: list of regexes -> only files & folder which match will be printed
     :param show_hidden: hidden folders & files are printed by default -> False to change
-    :param full_path: the full path from the given path is printed
+    :param absolute_path: the absolute path from the file/folder is printed
+    :param relative_path: the relative path according to the argument path is printed
     :param print_sum: printing the number of directories and files in the end
     :return: tree as a string if print_string == False, otherwise nothing
     """
@@ -95,7 +104,8 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
     if not include:
         # if there is nothing specified, all files should be included except those which are excluded
         include = [r'.*']
-    directory_tree = Tree(max_depth, directories, files, exclude, include, show_hidden, full_path, print_sum)
+    directory_tree = Tree(path, max_depth, directories, files, exclude, include, show_hidden, absolute_path, relative_path,
+                          print_sum)
     tree = [path] + directory_tree.down(path, 0, [True] * max_depth)
     if directory_tree.print_sum:
         tree += [f'{directory_tree.dicts} directories, {directory_tree.f} files']
@@ -106,5 +116,4 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
 
 
 if __name__ == '__main__':
-    includes = [r'^LSP.*', 'Folien']
-    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', include=includes, max_depth=3, show_hidden=False)
+    print_tree(max_depth=3, show_hidden=False, relative_path=True)
