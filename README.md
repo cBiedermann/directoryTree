@@ -8,8 +8,8 @@ The method print_tree() handles all the possible options which are explained in 
 - max_depth specifies the maximum depth of the tree
 - directories = False means that directories are excluded
 - files = False means that files are excluded
-- excluded is a list of regexes matching the files/folder which should not be in the tree
-- only takes a list of regexes matching the files/folders which should be in the tree. Files in a matched folder still need to match the a regex as well.
+- excluded is a list of regexes matching the files/folders which should be excluded
+- include takes a list of regexes matching the files/folders which should be in the tree. Files in a matched folder still need to match a regex as well.
 - show_hidden = True means that hidden files (starting with a dot) are also printed
 - full_path = True means that the full path of all the files/folders is printed
 - print_sum = Trues prints the number of files and directories printed

@@ -13,14 +13,14 @@ class Seperator(Enum):
 class Tree:
 
     def __init__(self, max_depth: int = 10, directories: bool = True, files: bool = True, exclude: list = [],
-                 only: list = [], show_hidden: bool = True, full_path: bool = False, print_sum: bool = True):
+                 include: list = [], show_hidden: bool = True, full_path: bool = False, print_sum: bool = True):
 
         # class variables
         self.max_depth = max_depth
         self.directories = directories
         self.files = files
         self.exclude = exclude
-        self.only = only
+        self.include = include
         self.show_hidden = show_hidden
         self.full_path = full_path
         self.print_sum = print_sum
@@ -64,7 +64,7 @@ class Tree:
         return representation + str(Seperator.LAST.value if not last_elem[depth] else Seperator.MIDDLE.value) + element
 
     def entry_matches(self, entry: str, included: bool = False) -> bool:
-        data = self.only if included else self.exclude
+        data = self.include if included else self.exclude
         for regex in data:
             if re.match(regex, entry):
                 return True
@@ -72,7 +72,7 @@ class Tree:
 
 
 def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, directories: bool = True,
-               files: bool = True, exclude: list = [], only: list = [], show_hidden: bool = True,
+               files: bool = True, exclude: list = [], include: list = [], show_hidden: bool = True,
                full_path: bool = False, print_sum: bool = True):
     """
     this method provides the functionality to print the working directory by setting multiple options
@@ -82,7 +82,7 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
     :param directories: directories are printed by default -> False if they should not be printed
     :param files: files are printed by default -> False if they should not be printed
     :param exclude: list of regexes -> files & folders which match will not be printed
-    :param only: list of regexes -> only files & folder which match will be printed
+    :param include: list of regexes -> only files & folder which match will be printed
     :param show_hidden: hidden folders & files are printed by default -> False to change
     :param full_path: the full path from the given path is printed
     :param print_sum: printing the number of directories and files in the end
@@ -92,9 +92,10 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
         path = os.getcwd()
     if not show_hidden:
         exclude.append(r'^\..*')
-    if not only:
-        only = [r'.*']
-    directory_tree = Tree(max_depth, directories, files, exclude, only, show_hidden, full_path, print_sum)
+    if not include:
+        # if there is nothing specified, all files should be included except those which are excluded
+        include = [r'.*']
+    directory_tree = Tree(max_depth, directories, files, exclude, include, show_hidden, full_path, print_sum)
     tree = [path] + directory_tree.down(path, 0, [True] * max_depth)
     if directory_tree.print_sum:
         tree += [f'{directory_tree.dicts} directories, {directory_tree.f} files']
@@ -105,5 +106,5 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
 
 
 if __name__ == '__main__':
-    include = [r'^LSP.*', 'Folien']
-    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', only=include, max_depth=3, show_hidden=False)
+    includes = [r'^LSP.*', 'Folien']
+    print_tree('/Users/clara/Documents/Uni/4.Semester/LSP', include=includes, max_depth=3, show_hidden=False)
