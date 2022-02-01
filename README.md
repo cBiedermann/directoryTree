@@ -16,6 +16,15 @@ The method print_tree() handles all the possible options which are explained in 
   (note: if absolute and relative path are True the absolute path is printed)
 - print_sum = Trues prints the number of files and directories printed
 
+###Example usage
+
+```python
+from Tree import print_tree
+
+if __name__ == '__main__':
+    # prints the tree of the current working directory three options
+    print_tree(relative_path=True, show_hidden=False, max_depth=5)
+```
 ## Output
 
 The generated output can look like this:
