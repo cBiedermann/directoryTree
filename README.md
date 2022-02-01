@@ -11,10 +11,10 @@ The method print_tree() handles all the possible options which are explained in 
 - excluded is a list of regexes matching the files/folders which should be excluded
 - include takes a list of regexes matching the files/folders which should be in the tree. Files in a matched folder still need to match a regex as well.
 - show_hidden = True means that hidden files (starting with a dot) are also printed
-- absolute_path = True means that the absolute paths of all the files/folders are printed
-- relative_path = True means that the relative paths of all the files/folders are printed \
+- absolute_path = True means that the absolute path of all the files/folders is printed
+- relative_path = True means that the relative path of all the files/folders is printed \
   (note: if absolute and relative path are True the absolute path is printed)
-- print_sum = Trues prints the number of files and directories printed
+- print_sum = True prints the number of files and directories in the tree
 
 ###Example usage
 
