@@ -113,7 +113,3 @@ def print_tree(path: str = '', print_string: bool = True, max_depth: int = 10, d
         print(*tree, sep='\n')
     else:
         return tree
-
-
-if __name__ == '__main__':
-    print_tree(max_depth=3, show_hidden=False, relative_path=True)
